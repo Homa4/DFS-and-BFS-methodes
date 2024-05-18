@@ -214,12 +214,12 @@ const dfs = (matrix, numberOfVertex, radius) => {
         if (!state.visited.has(neighbor)) {
             state.visited.add(neighbor);
             state.stack.push(neighbor);
-            paintVertex(arrOfVertex[neighbor], neighbor + 1, 'yellow', radius); // Pass radius here
+            paintVertex(arrOfVertex[neighbor], neighbor + 1, 'yellow', radius); 
             drawEdgeLine(arrOfVertex[state.currentVertex], arrOfVertex[neighbor]);
         }
     }
 
-    paintVertex(arrOfVertex[state.currentVertex], state.currentVertex + 1, 'red', radius); // Pass radius here
+    paintVertex(arrOfVertex[state.currentVertex], state.currentVertex + 1, 'red', radius); 
 
     if (state.stack.length === 0) {
         alert("DFS completed");
