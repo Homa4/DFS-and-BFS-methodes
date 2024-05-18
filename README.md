@@ -1,3 +1,3 @@
-Directed-and-Undirected-graph
+see in live
 
-https://homa4.github.io/Directed-and-Undirected-graph/
+ https://homa4.github.io/DFS-and-BFS-methodes/
