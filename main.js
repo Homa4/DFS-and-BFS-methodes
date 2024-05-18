@@ -13,14 +13,8 @@ const buttonDFS = document.querySelector(".buttonDFS");
 let matrix;
 
 button.addEventListener("click", () => {
-    const radiusValue = parseInt(radius.value, 10);
-    const numOfVertexValue = parseInt(numOfVertex.value, 10);
-
-    if (isNaN(radiusValue) || isNaN(numOfVertexValue)) {
-        console.error("Invalid input for radius or number of vertices.");
-        return;
-    }
-
+    const radiusValue = radius.value;
+    const numOfVertexValue = numOfVertex.value;
     matrix = generateSymmetricBinaryMatrix(numOfVertexValue);
     undefinedGraph(radiusValue, numOfVertexValue, matrix);
     generateVertexForBFS(radiusValue, numOfVertexValue, matrix);
@@ -28,7 +22,7 @@ button.addEventListener("click", () => {
 });
 
 buttonBFS.addEventListener("click", () => {
-    const numOfVertexValue = parseInt(numOfVertex.value, 10);
+    const numOfVertexValue = numOfVertex.value;
 
     if (matrix) {
         bfs(matrix, numOfVertexValue);
@@ -38,7 +32,7 @@ buttonBFS.addEventListener("click", () => {
 });
 
 buttonDFS.addEventListener("click", () => {
-    const numOfVertexValue = parseInt(numOfVertex.value, 10);
+    const numOfVertexValue = numOfVertex.value;
 
     if (matrix) {
         dfs(matrix, numOfVertexValue);

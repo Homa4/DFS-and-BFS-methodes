@@ -26,19 +26,3 @@ function generateSymmetricBinaryMatrix(size) {
 }
 
 export default generateSymmetricBinaryMatrix;
-
-
-// Example function to generate a symmetric binary matrix
-// export default function generateSymmetricBinaryMatrix(size) {
-//     const matrix = Array.from({ length: size }, () => Array(size).fill(0));
-//     for (let i = 0; i < size; i++) {
-//         for (let j = i; j < size; j++) {
-//             if (i !== j) {
-//                 const value = Math.random() < 0.5 ? 0 : 1;
-//                 matrix[i][j] = value;
-//                 matrix[j][i] = value;
-//             }
-//         }
-//     }
-//     return matrix;
-// }
