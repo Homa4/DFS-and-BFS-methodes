@@ -1,4 +1,3 @@
-// import generateVertexForBFSAndDFS from "./generateVertexForBFSAndDFS";
 const undefinedGraph = (rad, numOfVertex, matrix) => {
     const canvas = document.querySelector("canvas");
     const ctx = canvas.getContext('2d');
@@ -6,7 +5,6 @@ const undefinedGraph = (rad, numOfVertex, matrix) => {
     const radius = rad;
     canvas.width = 1000;
     canvas.height = 600;
-    console.log(radius, numberOfVertex)
     const width = 1000;
     const height = 600;
     const arrOfVertex = [];
@@ -31,14 +29,13 @@ const undefinedGraph = (rad, numOfVertex, matrix) => {
             for (let i = 0; i < currentLineCount; i++) {
                 arrOfVertex.push({ x, y });
                 drawCircle(x, y, circleNumber++, radius);
-                // x += line === 0 ? dx1 : (line === 1 ? dx2 : dx3);
-                if(line === 0){
-                    x+=dx1;
-                } else if(line === 1){
-                    x+=dx2;
-                    arrOfVertexDx2.push({x,y});
-                } else{
-                    x+=dx3;
+                if (line === 0) {
+                    x += dx1;
+                } else if (line === 1) {
+                    x += dx2;
+                    arrOfVertexDx2.push({ x, y });
+                } else {
+                    x += dx3;
                 }
             }
 
@@ -47,37 +44,37 @@ const undefinedGraph = (rad, numOfVertex, matrix) => {
         }
     }
 
-    function generateMisRange(cord){
+    function generateMisRange(cord) {
         const resArr = [];
         let temp = cord;
         for (let i = 0; i < radius; i++) {
             temp--;
             resArr.push(temp);
         }
-    
+
         resArr.reverse();
         resArr.push(cord);
         temp = cord;
-    
+
         for (let i = 0; i < radius; i++) {
             temp++;
             resArr.push(temp);
         }
         return resArr;
     }
-    
+
     function chekingIfHasMis(cordX) {
         const arr = generateMisRange(cordX);
         return arrOfVertexDx2.some(elem => arr.includes(elem.x));
-    }    
+    }
 
     function drawCircle(x, y, num, radius) {
         ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2); 
-        ctx.fillStyle = 'purple'; 
-        ctx.fill(); 
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'purple';
+        ctx.fill();
         ctx.closePath();
-        
+
         ctx.fillStyle = 'white';
         ctx.font = 'bold 20px Arial';
         ctx.textAlign = 'center';
@@ -93,7 +90,7 @@ const undefinedGraph = (rad, numOfVertex, matrix) => {
             tempForFun = temp / 2;
             fillLinesWithVertex(tempForFun, tempForFun);
         } else {
-            let second =  Math.floor(temp / 2);
+            let second = Math.floor(temp / 2);
             let first = temp - second;
             fillLinesWithVertex(first, second);
         }
@@ -117,11 +114,11 @@ const undefinedGraph = (rad, numOfVertex, matrix) => {
         ctx.arc(x + 7, y, radius - 10, Math.PI / 6, (Math.PI * 11) / 6);
         ctx.stroke();
         ctx.closePath();
-    
+
         ctx.save();
-    
+
         ctx.translate(x + 7 + Math.cos((Math.PI * 11) / 6) * (radius - 10), y + Math.sin((Math.PI * 11) / 6) * (radius - 10));
-    
+
         const arrowSize = 12;
         ctx.beginPath();
         ctx.moveTo(0, 0);
@@ -129,7 +126,7 @@ const undefinedGraph = (rad, numOfVertex, matrix) => {
         ctx.lineTo(-arrowSize * Math.cos((Math.PI * 11) / 6 + Math.PI / 6), -arrowSize * Math.sin((Math.PI * 11) / 6 + Math.PI / 6));
         ctx.closePath();
         ctx.fill();
-    
+
         ctx.restore();
     }
 
@@ -139,8 +136,8 @@ const undefinedGraph = (rad, numOfVertex, matrix) => {
 
         let distance = Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2));
 
-        let newEndX = end.x - (end.x - start.x) / distance ;
-        let newEndY = end.y - (end.y - start.y) / distance ;
+        let newEndX = end.x - (end.x - start.x) / distance;
+        let newEndY = end.y - (end.y - start.y) / distance;
 
         let controlX, controlY;
         if (start.x !== end.x && start.y !== end.y) {
@@ -159,7 +156,7 @@ const undefinedGraph = (rad, numOfVertex, matrix) => {
         ctx.quadraticCurveTo(controlX, controlY, newEndX, newEndY);
         ctx.stroke();
 
-        return { newEndX, newEndY, controlX, controlY};
+        return { newEndX, newEndY, controlX, controlY };
     }
 
     function drawArcArrow(start, end, arrowDistance = 10, bendAngle = Math.PI / 1) {
@@ -171,12 +168,11 @@ const undefinedGraph = (rad, numOfVertex, matrix) => {
         const controlY = arrow.controlY;
 
         const angle = Math.atan2(newEndY - controlY, newEndX - controlX);
-        const angleInDegrees = angle * (180 / Math.PI);
 
         ctx.save();
         ctx.translate(newEndX, newEndY);
-        ctx.rotate(angle); 
-        ctx.fillStyle ='black';
+        ctx.rotate(angle);
+        ctx.fillStyle = 'black';
         ctx.beginPath();
         ctx.moveTo(0, 0);
         ctx.lineTo(-arrowSize, arrowSize / 2);
@@ -184,36 +180,42 @@ const undefinedGraph = (rad, numOfVertex, matrix) => {
         ctx.closePath();
         ctx.fill();
         ctx.restore();
-
-        drawArrow(newEndX, newEndY, angleInDegrees); 
     }
 
-    function drawStraitLine(start, end, angle){
-                ctx.beginPath();
-                ctx.moveTo(start.x, start.y);
-                ctx.lineTo(end.x, end.y);
-                ctx.stroke(); 
-                drawArrow(end.x, end.y, angle);
-                ctx.closePath();
+    function drawStraitLine(start, end, angle) {
+        ctx.beginPath();
+        ctx.moveTo(start.x, start.y);
+        ctx.lineTo(end.x, end.y);
+        ctx.stroke();
+        drawArrow(end.x, end.y, angle);
+        ctx.closePath();
     }
 
-    function drawEdgeLine(x1, y1, x2, y2, angle){
-        let hasMis = chekingIfHasMis((x1+x2)/2);
-    
+    function drawEdgeLine(vertex1, vertex2, angle) {
+        const { x: x1, y: y1 } = vertex1;
+        const { x: x2, y: y2 } = vertex2;
+
+        const midX = (x1 + x2) / 2;
+        const midY = (y1 + y2) / 2;
+
+        const hasMis = chekingIfHasMis(midX);
+
+        let drawArc = false;
+
         arrOfVertex.forEach((elem) => {
-            if (elem.x === (x1 + x2)/2 && elem.y === (y1 + y2) / 2) {
-                drawArcArrow({ x: x1, y: y1 }, { x: x2, y: y2 }, angle);
-            } else if (hasMis && elem.y === (y1 + y2) / 2) {
-                console.log('it working');
-                drawArcArrow({ x: x1, y: y1 }, { x: x2, y: y2 }, angle);
-            } else {
-                drawStraitLine({ x: x1, y: y1 }, { x: x2, y: y2 }, angle);
+            if (elem.x === midX && elem.y === midY) {
+                drawArc = true;
+            } else if (hasMis && elem.y === midY) {
+                drawArc = true;
             }
         });
-    }
-    
 
-        
+        if (drawArc) {
+            drawArcArrow({ x: x1, y: y1 }, { x: x2, y: y2 }, angle);
+        } else {
+            drawStraitLine({ x: x1, y: y1 }, { x: x2, y: y2 }, angle);
+        }
+    }
 
     function drawGraphEdges() {
         for (let i = 0; i < numberOfVertex; i++) {
@@ -223,7 +225,7 @@ const undefinedGraph = (rad, numOfVertex, matrix) => {
                     drawLoopedLineWithArrow(arrOfVertex[j].x - (2 * radius - 10), arrOfVertex[i].y, radius, angle);
                 } else if (matrix[i][j] === 1) {
                     const angle = Math.atan2(arrOfVertex[j].y - arrOfVertex[i].y, arrOfVertex[j].x - arrOfVertex[i].x);
-                    drawEdgeLine(arrOfVertex[i].x, arrOfVertex[i].y, arrOfVertex[j].x, arrOfVertex[j].y, angle);
+                    drawEdgeLine(arrOfVertex[i], arrOfVertex[j], angle);
                 }
             }
         }
@@ -233,7 +235,6 @@ const undefinedGraph = (rad, numOfVertex, matrix) => {
     drawGraphEdges();
     console.log(arrOfVertexDx2);
     console.log(matrix);
-
 }
 
 export default undefinedGraph;

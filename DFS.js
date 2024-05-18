@@ -14,18 +14,17 @@ const generateVertexForDFS = (rad, numOfVertex, matrix) => {
     arrOfVertex = [];
     arrOfVertexDx2 = [];
 
-    function drawCircle(x, y, num, radius) {
+    function drawCircle(x, y, num, radius, fillColor='purple', textColor='white') {
         ctxDFS.beginPath();
         ctxDFS.arc(x, y, radius, 0, Math.PI * 2);
-        ctxDFS.fillStyle = 'purple';
+        ctxDFS.fillStyle = fillColor;
         ctxDFS.fill();
         ctxDFS.closePath();
 
-        ctxDFS.fillStyle = 'white';
+        ctxDFS.fillStyle = textColor;
         ctxDFS.font = 'bold 20px Arial';
         ctxDFS.textAlign = 'center';
         ctxDFS.textBaseline = 'middle';
-
         ctxDFS.fillText(num, x, y);
     }
 
@@ -38,12 +37,13 @@ const generateVertexForDFS = (rad, numOfVertex, matrix) => {
         let x = dx1;
         let y = 50;
         let circleNumber = 1;
+        let circleNumberForArr = 1;
 
         for (let line = 0; line < 3; line++) {
             let currentLineCount = line === 0 ? firstL : (line === 1 ? secondL : thirdL);
 
             for (let i = 0; i < currentLineCount; i++) {
-                arrOfVertex.push({ x, y });
+                arrOfVertex.push({ x, y, num: circleNumberForArr++ });
                 drawCircle(x, y, circleNumber++, radius);
                 if (line === 1) {
                     arrOfVertexDx2.push({ x, y });
@@ -58,18 +58,30 @@ const generateVertexForDFS = (rad, numOfVertex, matrix) => {
 
     function drawGraph() {
         let temp = numOfVertex - 3;
-        let tempForFun;
         if (temp % 2 === 0) {
-            tempForFun = temp / 2;
-            fillLinesWithVertex(tempForFun, tempForFun);
+            fillLinesWithVertex(temp / 2, temp / 2);
         } else {
             let second = Math.floor(temp / 2);
-            let first = temp - second;
-            fillLinesWithVertex(first, second);
+            fillLinesWithVertex(temp - second, second);
         }
     }
 
     drawGraph();
+}
+
+function paintVertex(cordinates, vertexNum, fillColor, radius, textColor = 'white') {
+    const ctxDFS = document.querySelector("canvas#canvas-DFS").getContext('2d');
+    ctxDFS.beginPath();
+    ctxDFS.arc(cordinates.x, cordinates.y, radius, 0, Math.PI * 2);
+    ctxDFS.fillStyle = fillColor;
+    ctxDFS.fill();
+    ctxDFS.closePath();
+
+    ctxDFS.fillStyle = textColor;
+    ctxDFS.font = 'bold 20px Arial';
+    ctxDFS.textAlign = 'center';
+    ctxDFS.textBaseline = 'middle';
+    ctxDFS.fillText(vertexNum, cordinates.x, cordinates.y);
 }
 
 function generateMisRange(cord) {
@@ -98,7 +110,7 @@ function chekingIfHasMis(cordX) {
 
 function drawArrow(ctx, x, y, angle) {
     const arrowSize = 12;
-    ctx.fillStyle = 'black'
+    ctx.fillStyle = 'black';
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(angle);
@@ -154,31 +166,23 @@ function drawStraitLine(start, end) {
     drawArrow(ctx, end.x, end.y, angle);
 }
 
-function drawLoopedLineWithArrow(x, y, radius) {
-    const ctx = document.querySelector("canvas#canvas-DFS").getContext('2d');
-    const loopRadius = 20;
-
-    ctx.beginPath();
-    ctx.arc(x + loopRadius, y - loopRadius, loopRadius, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.closePath();
-
-    const angle = Math.PI / 4;
-    drawArrow(ctx, x + loopRadius * 2, y - loopRadius * 2, angle);
-}
-
 function drawEdgeLine(start, end) {
     let hasMis = chekingIfHasMis((start.x + end.x) / 2);
+    let drawArc = false;
 
     arrOfVertex.forEach((elem) => {
         if (elem.x === (start.x + end.x) / 2 && elem.y === (start.y + end.y) / 2) {
-            drawCurve(start, end);
+            drawArc = true;
         } else if (hasMis && elem.y === (start.y + end.y) / 2) {
-            drawCurve(start, end);
-        } else {
-            drawStraitLine(start, end);
+            drawArc = true;
         }
     });
+
+    if (drawArc) {
+        drawCurve(start, end);
+    } else {
+        drawStraitLine(start, end);
+    }
 }
 
 const state = {
@@ -188,9 +192,9 @@ const state = {
     initialized: false
 };
 
-const startVertex = 0; 
+const startVertex = 0;
 
-const dfs = (matrix, numberOfVertex) => {
+const dfs = (matrix, numberOfVertex, radius) => {
     if (!state.initialized) {
         state.visited.add(startVertex);
         state.stack.push(startVertex);
@@ -201,22 +205,24 @@ const dfs = (matrix, numberOfVertex) => {
     const neighbors = [];
 
     for (let i = 0; i < matrix[state.currentVertex].length; i++) {
-        if (matrix[state.currentVertex][i] === 1) { 
+        if (matrix[state.currentVertex][i] === 1) {
             neighbors.push(i);
         }
     }
 
-    for (const neighborIndex of neighbors) {
-        if (!state.visited.has(neighborIndex)) {
-            drawEdgeLine(arrOfVertex[state.currentVertex], arrOfVertex[neighborIndex]);
-            state.visited.add(neighborIndex);
-            state.stack.push(neighborIndex);
+    for (const neighbor of neighbors) {
+        if (!state.visited.has(neighbor)) {
+            state.visited.add(neighbor);
+            state.stack.push(neighbor);
+            paintVertex(arrOfVertex[neighbor], neighbor + 1, 'yellow', radius); // Pass radius here
+            drawEdgeLine(arrOfVertex[state.currentVertex], arrOfVertex[neighbor]);
         }
     }
 
+    paintVertex(arrOfVertex[state.currentVertex], state.currentVertex + 1, 'red', radius); // Pass radius here
+
     if (state.stack.length === 0) {
-        alert("PRIMA VICTORIA\n DFS comleted");
-        state.initialized = false; 
+        alert("DFS completed");
     } else {
         state.currentVertex = state.stack.pop();
     }

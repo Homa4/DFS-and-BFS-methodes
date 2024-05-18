@@ -40,14 +40,15 @@ const generateVertexForBFS = (rad, numOfVertex, matrix) => {
         let y = 50;
         let circleNumber = 1;
         let circleNumberForArr = 1;
+
         for (let line = 0; line < 3; line++) {
             let currentLineCount = line === 0 ? firstL : (line === 1 ? secondL : thirdL);
 
             for (let i = 0; i < currentLineCount; i++) {
-                arrOfVertex.push({ x:x, y:y, num:circleNumberForArr++ });
+                arrOfVertex.push({ x, y, num: circleNumberForArr++ });
                 drawCircle(x, y, circleNumber++, radius);
                 if (line === 1) {
-                    arrOfVertexDx2.push({ x:x, y:y });
+                    arrOfVertexDx2.push({ x, y });
                 }
                 x += line === 0 ? dx1 : (line === 1 ? dx2 : dx3);
             }
@@ -59,14 +60,11 @@ const generateVertexForBFS = (rad, numOfVertex, matrix) => {
 
     function drawGraph() {
         let temp = numOfVertex - 3;
-        let tempForFun;
         if (temp % 2 === 0) {
-            tempForFun = temp / 2;
-            fillLinesWithVertex(tempForFun, tempForFun);
+            fillLinesWithVertex(temp / 2, temp / 2);
         } else {
             let second = Math.floor(temp / 2);
-            let first = temp - second;
-            fillLinesWithVertex(first, second);
+            fillLinesWithVertex(temp - second, second);
         }
     }
 
@@ -74,7 +72,7 @@ const generateVertexForBFS = (rad, numOfVertex, matrix) => {
     console.log(arrOfVertex);
 }
 
-function paintVertex(cordinates, vertexNum, fillColor, textColor = 'white'){
+function paintVertex(cordinates, vertexNum, fillColor, textColor = 'white') {
     ctxBFS.beginPath();
     ctxBFS.arc(cordinates.x, cordinates.y, radius, 0, Math.PI * 2);
     ctxBFS.fillStyle = fillColor;
@@ -115,8 +113,8 @@ function chekingIfHasMis(cordX) {
 
 function drawArrow(ctx, x, y, angle) {
     const arrowSize = 12;
-    ctx.fillStyle = 'black'
-    ctx.save();
+    ctx.fillStyle = 'black';
+    ctx.save(); 
     ctx.translate(x, y);
     ctx.rotate(angle);
     ctx.beginPath();
@@ -125,7 +123,7 @@ function drawArrow(ctx, x, y, angle) {
     ctx.lineTo(-arrowSize, -arrowSize / 2);
     ctx.closePath();
     ctx.fill();
-    ctx.restore();
+    ctx.restore(); 
 }
 
 function drawCurve(start, end) {
@@ -138,6 +136,7 @@ function drawCurve(start, end) {
     let controlX, controlY;
     const bendAngle = Math.PI / 8;
 
+   
     if (start.x !== end.x && start.y !== end.y) {
         controlX = midX + Math.cos(bendAngle) * (midY - start.y);
         controlY = midY + Math.sin(bendAngle) * (midX - start.x);
@@ -173,16 +172,22 @@ function drawStraitLine(start, end) {
 
 function drawEdgeLine(start, end) {
     let hasMis = chekingIfHasMis((start.x + end.x) / 2);
+    let drawArc = false;
 
+   
     arrOfVertex.forEach((elem) => {
         if (elem.x === (start.x + end.x) / 2 && elem.y === (start.y + end.y) / 2) {
-            drawCurve(start, end);
+            drawArc = true;
         } else if (hasMis && elem.y === (start.y + end.y) / 2) {
-            drawCurve(start, end);
-        } else {
-            drawStraitLine(start, end);
+            drawArc = true;
         }
     });
+
+    if (drawArc) {
+        drawCurve(start, end); 
+    } else {
+        drawStraitLine(start, end); 
+    }
 }
 
 const state = {
@@ -197,7 +202,7 @@ const startVertex = 0;
 
 const bfs = (matrix, numberOfVertex) => {
     if (!state.initialized) {
-        state.visited.add(startVertex);
+        state.visited.add(startVertex); 
         state.queue.push(startVertex);
         state.currentVertex = state.queue.shift();
         state.initialized = true;
@@ -210,22 +215,22 @@ const bfs = (matrix, numberOfVertex) => {
             neighbors.push(i);
         }
     }
-     
+
     for (const neighbor of neighbors) {
         if (!state.visited.has(neighbor)) {
             state.visited.add(neighbor);
             state.queue.push(neighbor);
-            paintVertex(arrOfVertex[neighbor], neighbor + 1, 'yellow');
-            drawEdgeLine(arrOfVertex[state.currentVertex], arrOfVertex[neighbor]);
-        } 
+            paintVertex(arrOfVertex[neighbor], neighbor + 1, 'yellow'); 
+            drawEdgeLine(arrOfVertex[state.currentVertex], arrOfVertex[neighbor]); 
+        }
     }
 
     paintVertex(arrOfVertex[state.currentVertex], state.currentVertex + 1, 'red'); 
 
     if (state.queue.length === 0) {
-        alert("PRIMA VICTORIA\n BFS completed");
+        alert("BFS completed");
     } else {
-        state.currentVertex = state.queue.shift();
+        state.currentVertex = state.queue.shift(); 
     }
 };
 
